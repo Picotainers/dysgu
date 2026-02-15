@@ -1,4 +1,4 @@
-name: Build and Publish Distroless dysgu
+name: Build and Publish dysgu
 
 on:
   push:

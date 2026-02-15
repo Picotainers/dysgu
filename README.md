@@ -1,5 +1,5 @@
 # dysgu
-Small, distroless-when-possible container for `dysgu`.
+Small compatibility-focused container for `dysgu`.
 
 ## how to use
 ```bash
