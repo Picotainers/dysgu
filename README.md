@@ -1,7 +1,16 @@
 # dysgu
-Small compatibility-focused container for `dysgu`.
+Container image for `dysgu`.
 
-## how to use
+## Quick Usage
 ```bash
-docker run --rm -v "$(pwd):/data" picotainers/dysgu:latest --help
+# Pull the image
+docker pull docker.io/picotainers/dysgu:latest
+
+# Run the tool
+docker run --rm docker.io/picotainers/dysgu:latest --help
+```
+
+## Usage with input files
+```bash
+docker run --rm -v "$(pwd):/data" docker.io/picotainers/dysgu:latest --help
 ```

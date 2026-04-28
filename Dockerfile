@@ -1,34 +1,47 @@
-# syntax=docker/dockerfile:1
-# Compatibility-first template for dysgu.
-# Installs package from Bioconda and copies the full conda runtime to avoid missing libs/interpreters.
+FROM ubuntu:22.04 AS builder
 
-FROM mambaorg/micromamba:2.0.5-debian12-slim AS builder
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN micromamba install -y -n base -c conda-forge -c bioconda \
-    dysgu \
-    && micromamba clean --all --yes
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      build-essential \
+      ca-certificates \
+      git \
+      libbz2-dev \
+      libcurl4-openssl-dev \
+      liblzma-dev \
+      libssl-dev \
+      python3 \
+      python3-dev \
+      python3-pip \
+      python3-venv \
+      zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Resolve a runnable command for this package.
-# Prefer exact match, then underscore variant, then prefix match.
-RUN set -eux; \
-    BIN=""; \
-    if [ -x "/opt/conda/bin/dysgu" ]; then BIN="/opt/conda/bin/dysgu"; fi; \
-    if [ -z "$BIN" ]; then CAND="/opt/conda/bin/$(echo dysgu | tr '-' '_')"; [ -x "$CAND" ] && BIN="$CAND" || true; fi; \
-    if [ -z "$BIN" ]; then BIN="$(find /opt/conda/bin -maxdepth 1 -type f -perm -111 -name 'dysgu*' | head -n1 || true)"; fi; \
-    test -n "$BIN"; \
-    printf '%s\n' "$BIN" > /tmp/tool-entry-path
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
 
-FROM mambaorg/micromamba:2.0.5-debian12-slim
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-COPY --from=builder /opt/conda /opt/conda
-COPY --from=builder /tmp/tool-entry-path /tmp/tool-entry-path
+RUN git clone --depth 1 https://github.com/kcleal/dysgu.git /tmp/dysgu && \
+    pip install --no-cache-dir /tmp/dysgu && \
+    rm -rf /tmp/dysgu
 
-USER root
-ENV PATH="/opt/conda/bin:${PATH}"
-ENV LD_LIBRARY_PATH="/opt/conda/lib:/opt/conda/lib64"
-RUN set -eux; \
-    BIN="$(cat /tmp/tool-entry-path)"; \
-    printf '#!/usr/bin/env bash\nexec "%s" "$@"\n' "$BIN" > /usr/local/bin/dysgu
-RUN chmod +x /usr/local/bin/dysgu && rm -f /tmp/tool-entry-path
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates \
+      libgomp1 \
+      libstdc++6 \
+      python3 && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:${PATH}"
+
 WORKDIR /data
-ENTRYPOINT ["/usr/local/bin/dysgu"]
+ENTRYPOINT ["dysgu"]
+CMD ["--help"]
