@@ -10,6 +10,7 @@ RUN apt-get update && \
       libbz2-dev \
       libcurl4-openssl-dev \
       libdeflate-dev \
+      libhts-dev \
       liblzma-dev \
       libssl-dev \
       pkg-config \
