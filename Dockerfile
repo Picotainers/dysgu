@@ -9,13 +9,14 @@ RUN apt-get update && \
       git \
       libbz2-dev \
       libcurl4-openssl-dev \
+      libdeflate-dev \
       liblzma-dev \
       libssl-dev \
+      pkg-config \
       python3 \
       python3-dev \
       python3-pip \
       python3-venv \
-      libdeflate-dev \
       zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
 
