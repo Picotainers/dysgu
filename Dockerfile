@@ -2,10 +2,7 @@ FROM ubuntu:22.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      software-properties-common && \
-    add-apt-repository universe && \
+RUN echo "deb http://archive.ubuntu.com/ubuntu/ jammy universe" >> /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
       build-essential \
