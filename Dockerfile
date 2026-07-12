@@ -6,6 +6,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       build-essential \
       autoconf \
+    automake \
+    libtool \
       ca-certificates \
       curl \
       git \
