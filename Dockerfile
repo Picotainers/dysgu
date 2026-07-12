@@ -5,9 +5,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       build-essential \
-      autoconf \
-    automake \
-    libtool \
       ca-certificates \
       curl \
       git \
@@ -24,9 +21,9 @@ RUN apt-get update && \
       zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth 1 --branch 1.21 https://github.com/samtools/htslib.git /tmp/htslib && \
+RUN curl -fsSL https://github.com/samtools/htslib/releases/download/1.21/htslib-1.21.tar.bz2 | tar xj -C /tmp && \
+    mv /tmp/htslib-1.21 /tmp/htslib && \
     cd /tmp/htslib && \
-    autoreconf -i && \
     ./configure --prefix=/usr/local && \
     make -j$(nproc) && \
     make install && \
