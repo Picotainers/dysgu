@@ -3,7 +3,7 @@ FROM ubuntu:22.04 AS builder
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG DYSGU_REPO=https://github.com/kcleal/dysgu.git
-ARG DYSGU_REF=v1.8.9
+ARG DYSGU_REF=v1.9.0
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -12,6 +12,7 @@ RUN apt-get update && \
       git \
       libbz2-dev \
       libcurl4-openssl-dev \
+      libdeflate-dev \
       liblzma-dev \
       libssl-dev \
       python3 \
@@ -37,6 +38,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       ca-certificates \
+      libdeflate0 \
       libgomp1 \
       libstdc++6 \
       python3 && \
