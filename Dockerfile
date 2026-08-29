@@ -2,6 +2,9 @@ FROM ubuntu:22.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+ARG DYSGU_REPO=https://github.com/kcleal/dysgu.git
+ARG DYSGU_REF=v1.9.0
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       build-essential \
@@ -35,7 +38,7 @@ ENV PATH="/opt/venv/bin:${PATH}"
 
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel meson ninja
 
-RUN git clone --depth 1 https://github.com/kcleal/dysgu.git /tmp/dysgu && \
+RUN git clone --depth 1 --branch "${DYSGU_REF}" "${DYSGU_REPO}" /tmp/dysgu && \
     pip install --no-cache-dir /tmp/dysgu && \
     rm -rf /tmp/dysgu
 
@@ -46,6 +49,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       ca-certificates \
+      libcurl4 \
+      libdeflate0 \
       libgomp1 \
       libstdc++6 \
       python3 && \
