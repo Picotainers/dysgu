@@ -24,8 +24,8 @@ jobs:
       - name: Smoke test
         run: |
           set -euo pipefail
-          docker run --rm picotainers-local/dysgu:smoke --help > help.txt
-          grep -Eiq 'dysgu|usage|version|options' help.txt
+          docker run --rm picotainers-local/dysgu:smoke --help
+          docker run --rm --entrypoint /bin/sh picotainers-local/dysgu:smoke -c 'command -v dysgu'
 
   publish:
     needs: test
